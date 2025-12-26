@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Definitivo de APIs</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23f97316%22></rect><text x=%2250%22 y=%2270%22 font-family=%22monospace%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22white%22 font-weight=%22bold%22>api</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Palette Dark Premium */
+            --bg-body: #09090b;
+            --bg-sidebar: #09090b; 
+            --bg-card: #141414;
+            --bg-hover: #1f1f1f; 
+            
+            --border: #27272a;
+            --border-hover: #3f3f46;
+            
+            --text-main: #ededed;
+            --text-muted: #a1a1aa;
+            --text-faint: #52525b;
+            
+            --accent: #f97316; /* Laranja */
+            
+            --nav-height: 60px;
+            --sidebar-width: 260px;
+            --content-width: 740px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { 
+            scroll-behavior: smooth; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.75;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 { color: var(--text-main); letter-spacing: -0.02em; font-weight: 600; line-height: 1.3; }
+        
+        h1 { font-size: 34px; margin: 0 0 24px 0; letter-spacing: -0.03em; }
+        
+        section { 
+            scroll-margin-top: 100px; 
+            margin-bottom: 60px; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 40px; 
+        }
+        section:last-child { border-bottom: none; }
+
+        h2 { font-size: 24px; margin: 0 0 24px 0; }
+        h3 { font-size: 18px; margin: 32px 0 16px 0; color: var(--text-main); }
+        
+        p { 
+            margin-bottom: 24px; 
+            color: var(--text-muted); 
+            font-size: 16px; 
+            text-align: justify;
+            hyphens: auto; 
+        }
+        strong { color: var(--text-main); font-weight: 600; }
+        ul, ol { margin-bottom: 24px; padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 8px; text-align: justify; }
+
+        .text-highlight { color: var(--accent); font-weight: 500; }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-main);
+            background: rgba(255,255,255,0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--nav-height);
+            background: rgba(9, 9, 11, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+        }
+
+        .nav-left { width: auto; display: flex; align-items: center; gap: 16px; }
+        
+        .brand { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            text-decoration: none; 
+            font-size: 14px; 
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .brand::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: block;
+            box-shadow: 0 0 8px rgba(249, 115, 22, 0.4); 
+        }
+
+        .nav-right { 
+            display: flex; 
+            justify-content: flex-end; 
+            gap: 12px; 
+            align-items: center; 
+        }
+
+        .nav-link {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .nav-link:hover { color: var(--text-main); background: var(--bg-hover); }
+        .nav-link.active { color: var(--text-main); background: var(--bg-hover); font-weight: 600; }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .icon-btn:hover { background: var(--bg-hover); color: var(--text-main); border-color: var(--border-hover); }
+        .icon-btn.active { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text-main); }
+
+        .btn-donate {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 36px;
+            padding: 0 16px;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .btn-donate svg { width: 16px; height: 16px; color: var(--accent); fill: none; stroke: currentColor; stroke-width: 2; }
+        .btn-donate:hover {
+            background: var(--bg-hover);
+            color: var(--text-main);
+            border-color: var(--border-hover);
+            box-shadow: 0 0 0 1px var(--border-hover); 
+        }
+
+        .dropdown-container { position: relative; }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            width: 180px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px;
+            display: none;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+            z-index: 110;
+        }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .dropdown-item:hover { background: var(--bg-hover); color: var(--text-main); }
+
+        .layout {
+            display: flex;
+            margin-top: var(--nav-height);
+            min-height: calc(100vh - var(--nav-height));
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            position: fixed;
+            top: var(--nav-height);
+            bottom: 0;
+            left: 0;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 24px 16px;
+            background: var(--bg-sidebar);
+            z-index: 50;
+            overscroll-behavior: contain; 
+        }
+        
+        .sidebar-group { margin-bottom: 24px; padding: 0 8px; }
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-faint);
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding-left: 10px;
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 5px 10px;
+            margin-bottom: 1px;
+            border-radius: 6px;
+            transition: all 0.1s ease-in-out;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        
+        .sidebar-link:hover { color: var(--text-main); background: var(--bg-hover); }
+        .sidebar-link.active { color: var(--text-main); background: var(--bg-hover); font-weight: 500; }
+        .sidebar-link.active::before {
+            content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+            height: 14px; width: 3px; background: var(--accent); border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar-link.sub {
+            padding: 4px 10px 4px 24px;
+            font-size: 12.5px;
+            color: var(--text-faint);
+        }
+        .sidebar-link.sub:hover { color: var(--text-main); background: var(--bg-hover); }
+        .sidebar-link.sub.active { color: var(--text-main); background: rgba(255,255,255,0.03); }
+        .sidebar-link.sub.active::before { height: 10px; width: 2px; background: var(--accent); opacity: 0.8; }
+
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            justify-content: center;
+            padding: 64px 24px 120px 24px;
+        }
+
+        .content-container { width: 100%; max-width: var(--content-width); }
+
+        .api-list { display: grid; gap: 16px; margin: 24px 0; }
+        .api-item {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.01);
+        }
+        .api-item p:last-child { margin-bottom: 0; }
+
+        .api-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .api-term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.05);
+        }
+        .api-desc { font-size: 15px; color: var(--text-muted); margin: 0; line-height: 1.6; text-align: justify; }
+        
+        .c-get { color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.2); }
+        .c-post { color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2); }
+        .c-put { color: #facc15; border: 1px solid rgba(250, 204, 21, 0.2); }
+        .c-del { color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); }
+
+        .analogy {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+        .analogy-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+        .analogy-item:last-child { margin-bottom: 0; }
+        .analogy-icon { font-size: 24px; line-height: 1.2; width: 32px; text-align: center; }
+
+        .code-block {
+            background: #050505;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            color: #d4d4d4;
+            margin: 24px 0;
+        }
+        .key { color: var(--accent); }
+        .str { color: #a3a3a3; }
+        .num { color: #d4d4d4; }
+        .comment { color: #52525b; font-style: italic; }
+
+        .pro-tip {
+            background: rgba(249, 115, 22, 0.05);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        .pro-tip strong { color: var(--accent); display: block; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* --- FOOTER PADRONIZADO --- */
+        .footer-section {
+            margin-top: 0; 
+            padding-top: 0;
+            text-align: left;
+        }
+
+        .footer-section h3 {
+            font-size: 22px;
+            margin-top: 0; 
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        .footer-text {
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            text-align: justify;
+        }
+
+        .footer-note {
+            font-size: 13px;
+            color: var(--text-faint);
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px dashed var(--border);
+            padding-top: 24px;
+            width: 100%;
+        }
+
+        /* --- BACK TO TOP COM ANIMAÇÃO DISCRETA --- */
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); border-color: var(--accent); }
+            70% { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); border-color: var(--accent); }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); border-color: var(--border); }
+        }
+
+        #backToTop {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 36px; /* Tamanho confortável */
+            height: 36px;
+            background: var(--bg-card); /* Fundo sólido para cobrir texto */
+            border: 1px solid var(--border);
+            border-radius: 8px; /* Quadrado arredondado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 10000; /* Z-Index Alto garantido */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        #backToTop.visible { 
+            opacity: 1; 
+            pointer-events: auto;
+            /* Animação de pulso discreto a cada 4s para não ser irritante */
+            animation: pulse-orange 4s infinite; 
+        }
+
+        #backToTop:hover { 
+            border-color: var(--text-main);
+            color: var(--text-main);
+            background: var(--bg-hover);
+            animation: none; /* Para animação ao interagir */
+            transform: translateY(-2px);
+        }
+        
+        #backToTop svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .mobile-toggle { display: none; background: none; border: none; color: var(--text-main); }
+        .desktop-only { display: block; }
+
+        @media (max-width: 900px) {
+            .sidebar { transform: translateX(-100%); transition: transform 0.2s; z-index: 200; }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; padding: 40px 24px; }
+            .mobile-toggle { display: block; }
+            .desktop-only { display: none; } 
+            
+            .footer-note { flex-direction: column; gap: 16px; text-align: center; }
+            .footer-text { text-align: justify; }
+            
+            .footer-btn-wrapper { width: 100%; }
+            .footer-btn-wrapper .btn-donate { width: 100%; }
+            
+            /* Ajuste posição back to top no mobile */
+            #backToTop { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <button class="mobile-toggle" onclick="toggleSidebar()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <div class="brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">docs.api.br</div>
+        </div>
+
+        <div class="nav-right">
+            <!-- Links de navegação desktop -->
+            <a onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="nav-link desktop-only" id="nav-guide">Início</a>
+
+            <!-- Botão Apoiar -->
+            <a href="#support" class="btn-donate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Apoiar
+            </a>
+
+            <!-- Dropdown Container -->
+            <div class="dropdown-container">
+                <button class="icon-btn" onclick="toggleDropdown()" title="Mais opções">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="https://github.com/euoryan" target="_blank" class="dropdown-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-group">
+                <div class="sidebar-title">Introdução</div>
+                <a href="#welcome" class="sidebar-link active">Bem-vindo</a>
+                <a href="#intro" class="sidebar-link">O que é uma API?</a>
+                <a href="#metaphor" class="sidebar-link">Analogia do Garçom</a>
+            </div>
+            
+            <div class="sidebar-group">
+                <div class="sidebar-title">Fundamentos</div>
+                <a href="#client-server" class="sidebar-link">Cliente vs Servidor</a>
+                <a href="#http" class="sidebar-link">O Protocolo HTTP</a>
+                <a href="#req-res" class="sidebar-link sub">Requisição e Resposta</a>
+                <a href="#url-structure" class="sidebar-link sub">URL e Endpoints</a>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">Dados</div>
+                <a href="#json" class="sidebar-link">JSON Explicado</a>
+                <a href="#headers" class="sidebar-link">Headers Importantes</a>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">Arquitetura REST</div>
+                <a href="#rest" class="sidebar-link">O que é REST?</a>
+                <a href="#verbs" class="sidebar-link">Verbos HTTP</a>
+                <a href="#status" class="sidebar-link">Status Codes</a>
+                <a href="#status-200" class="sidebar-link sub">2xx - Sucesso</a>
+                <a href="#status-400" class="sidebar-link sub">4xx - Erros</a>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">Avançado</div>
+                <a href="#params" class="sidebar-link">Parâmetros de Rota</a>
+                <a href="#auth" class="sidebar-link">Autenticação (Auth)</a>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">Prática</div>
+                <a href="#tools" class="sidebar-link">Ferramentas</a>
+            </div>
+
+             <div class="sidebar-group">
+                <div class="sidebar-title">Projeto</div>
+                <a href="#support" class="sidebar-link">Seu apoio</a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main">
+            <div class="content-container">
+                
+                <section id="welcome">
+                    <h1>Guia Definitivo de APIs</h1>
+                    <p class="text-highlight">Você acaba de encontrar a página mais completa, didática e acessível sobre APIs. Nossa versão está em português, mas você pode usar o tradutor do navegador para ler em sua língua ;)</p>
+                    <p>Diferente de cursos teóricos cansativos, este guia foi desenhado como uma enciclopédia viva. Aqui você vai sair do zero absoluto ("Não sei o que é uma requisição") até entender conceitos de engenharia de software usados por empresas como Uber, Stripe e Instagram.</p>
+                    <p>O objetivo é simples: desmistificar a "caixa preta" da comunicação entre sistemas.</p>
+                </section>
+
+                <section id="intro">
+                    <h2>O que é uma API?</h2>
+                    <p><strong>API</strong> é a sigla para <strong>Application Programming Interface</strong> (Interface de Programação de Aplicações). Mas vamos esquecer o tecnês.</p>
+                    <p>No mundo real, dois humanos se comunicam falando uma língua (Português, Inglês). No mundo digital, dois softwares diferentes (ex: o app do seu banco no iPhone e o servidor do banco em um Data Center) precisam de uma língua comum para trocar dados.</p>
+                    <p>A API é essa língua. É um contrato estrito que diz: <em>"Se você me mandar X, eu te devolvo Y."</em></p>
+                </section>
+
+                <section id="metaphor">
+                    <h2>Analogia do Garçom</h2>
+                    <p>Esta é a analogia mais famosa da indústria porque ela funciona perfeitamente para explicar o fluxo de dados.</p>
+                    
+                    <div class="analogy">
+                        <div class="analogy-item">
+                            <span class="analogy-icon">👤</span>
+                            <div>
+                                <strong style="display:block; margin-bottom:4px;">Você (Cliente / Frontend)</strong>
+                                Está sentado à mesa com fome. Você quer o prato (os dados), mas não pode entrar na cozinha para prepará-lo.
+                            </div>
+                        </div>
+                        <div class="analogy-item">
+                            <span class="analogy-icon">🍳</span>
+                            <div>
+                                <strong style="display:block; margin-bottom:4px;">A Cozinha (Servidor / Banco de Dados)</strong>
+                                É onde os ingredientes (dados brutos) estão guardados e onde os pratos são preparados. É um ambiente seguro, restrito e complexo.
+                            </div>
+                        </div>
+                        <div class="analogy-item">
+                            <span class="analogy-icon">🤵</span>
+                            <div>
+                                <strong style="display:block; margin-bottom:4px;">O Garçom (API)</strong>
+                                É o mensageiro. Ele vem até sua mesa, anota seu pedido (Request), leva até a cozinha, espera o preparo e traz a comida de volta (Response).
+                            </div>
+                        </div>
+                    </div>
+                    <p>Se você pedir algo que não está no menu, o garçom vai dizer "Não temos isso" (Erro 404). Se você tentar entrar na cozinha sem permissão, o segurança vai te barrar (Erro 403).</p>
+                </section>
+
+                <section id="client-server">
+                    <h2>Cliente vs Servidor</h2>
+                    <p>Toda a web funciona baseada nesse relacionamento. É vital entender quem é quem.</p>
+                    <ul>
+                        <li><strong>Cliente (Client):</strong> É quem <em>inicia</em> a conversa. Pode ser seu navegador (Chrome), um aplicativo mobile ou até mesmo uma geladeira inteligente. O cliente pede informação.</li>
+                        <li><strong>Servidor (Server):</strong> É quem <em>escuta</em> e responde. É um computador potente ligado 24/7 na internet, rodando um software (API) pronto para receber pedidos, consultar o banco de dados e devolver a resposta.</li>
+                    </ul>
+                </section>
+
+                <section id="http">
+                    <h2>O Protocolo HTTP</h2>
+                    <p>A "estrada" por onde o Garçom (API) caminha é o protocolo <strong>HTTP</strong> (HyperText Transfer Protocol). É um conjunto de regras universais que define como mensagens são formatadas e transmitidas.</p>
+                </section>
+
+                <section id="req-res">
+                    <h3>Requisição e Resposta (Request & Response)</h3>
+                    <p>Uma interação via API nunca é unilateral. Ela sempre ocorre em pares:</p>
+                    <div class="pro-tip">
+                        <strong>Ciclo de Vida:</strong>
+                        1. O Cliente monta um <code>Request</code> (Pedido/Requisição).<br>
+                        2. O Cliente envia para o Servidor.<br>
+                        3. O Servidor processa.<br>
+                        4. O Servidor devolve um <code>Response</code> (Resposta).
+                    </div>
+                </section>
+
+                <section id="url-structure">
+                    <h3>URL e Endpoints</h3>
+                    <p>Se a API é o garçom, a URL é o endereço do restaurante, e o <strong>Endpoint</strong> é o item específico do menu.</p>
+                    <p>Exemplo: <code>https://api.loja.com/produtos</code></p>
+                    <ul>
+                        <li><strong>Base URL:</strong> <code>https://api.loja.com</code> (O servidor)</li>
+                        <li><strong>Endpoint:</strong> <code>/produtos</code> (O recurso que você quer acessar)</li>
+                    </ul>
+                </section>
+
+                <section id="json">
+                    <h2>JSON Explicado</h2>
+                    <p>Antigamente, usava-se XML (cheio de tags complexas). Hoje, o padrão ouro é o <strong>JSON</strong> (JavaScript Object Notation). É leve, legível por humanos e fácil para máquinas processarem.</p>
+                    <p>Ele funciona com pares de <strong>Chave</strong> e <strong>Valor</strong>.</p>
+                    
+                    <div class="code-block">
+<span class="comment">Exemplo de um Perfil de Usuário</span>
+{
+  <span class="key">"id"</span>: <span class="num">8402</span>,
+  <span class="key">"nome"</span>: <span class="str">"Ana Silva"</span>,
+  <span class="key">"premium"</span>: <span class="num">true</span>,
+  <span class="key">"contatos"</span>: {
+    <span class="key">"email"</span>: <span class="str">"ana@email.com"</span>,
+    <span class="key">"telefone"</span>: <span class="str">"+551199999999"</span>
+  },
+  <span class="key">"tags"</span>: [<span class="str">"dev"</span>, <span class="str">"admin"</span>]
+}
+                    </div>
+                </section>
+
+                <section id="headers">
+                    <h2>Headers Importantes</h2>
+                    <p>Headers são metadados enviados "no envelope" da requisição, invisíveis para o usuário final, mas vitais para o servidor.</p>
+                    <div class="api-list">
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term">Content-Type</span></div>
+                            <span class="api-desc">Avisa o servidor qual a língua que você está falando. Geralmente: <code>application/json</code>.</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term">Authorization</span></div>
+                            <span class="api-desc">Onde vai sua senha ou token. Ex: <code>Bearer token_secreto_123</code>.</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term">User-Agent</span></div>
+                            <span class="api-desc">Identifica quem é o cliente (ex: "PostmanRuntime/7.26" ou "Mozilla/5.0...").</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="rest">
+                    <h2>O que é REST?</h2>
+                    <p>REST (Representational State Transfer) não é uma ferramenta, é um <strong>estilo de arquitetura</strong>. Uma API "RESTful" segue regras para ser previsível e organizada.</p>
+                    <p>A regra de ouro: <strong>URLs são Substantivos, não Verbos.</strong></p>
+                    <div class="pro-tip">
+                        <strong>Certo:</strong> <code>POST /produtos</code> (Crie um produto)<br>
+                        <strong>Errado:</strong> <code>POST /criarProduto</code> (Isso é RPC, não REST)
+                    </div>
+                </section>
+
+                <section id="verbs">
+                    <h2>Verbos HTTP</h2>
+                    <p>Como a URL é apenas o nome da coisa (ex: <code>/usuarios</code>), usamos o Verbo HTTP para dizer <strong>o que fazer</strong> com aquela coisa.</p>
+                    
+                    <div class="api-list">
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-get">GET</span></div>
+                            <span class="api-desc"><strong>Ler/Buscar.</strong> Pede dados ao servidor. É seguro e não altera nada. (Ex: Listar produtos).</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-post">POST</span></div>
+                            <span class="api-desc"><strong>Criar.</strong> Envia dados novos para serem salvos. (Ex: Cadastrar cliente).</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-put">PUT</span></div>
+                            <span class="api-desc"><strong>Substituir.</strong> Atualiza um registro inteiro. Se você mandar só o nome, ele apaga o endereço.</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-del">DELETE</span></div>
+                            <span class="api-desc"><strong>Remover.</strong> Apaga o registro permanentemente do banco de dados.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="status">
+                    <h2>Status Codes</h2>
+                    <p>O servidor não fala português. Ele responde com códigos numéricos de 3 dígitos para dizer o que aconteceu.</p>
+                </section>
+
+                <section id="status-200">
+                    <h3>2xx - Sucesso</h3>
+                    <div class="api-list">
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-post">200 OK</span></div>
+                            <span class="api-desc">Deu tudo certo. Tome aqui seus dados.</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-post">201 Created</span></div>
+                            <span class="api-desc">Sucesso, e algo novo foi criado (comum em POST).</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="status-400">
+                    <h3>4xx - Erros do Cliente (Sua Culpa)</h3>
+                    <div class="api-list">
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-put">400 Bad Request</span></div>
+                            <span class="api-desc">Você enviou dados inválidos (ex: JSON quebrado).</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-put">401 Unauthorized</span></div>
+                            <span class="api-desc">"Quem é você?" Faltou a senha ou token de autenticação.</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-header"><span class="api-term c-put">404 Not Found</span></div>
+                            <span class="api-desc">O que você pediu não existe (URL errada ou ID inexistente).</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="params">
+                    <h2>Parâmetros de Rota</h2>
+                    <p>Como enviar dados para a API? Existem formas diferentes dependendo do objetivo.</p>
+                    <p><strong>Query Params (Parâmetros de Consulta):</strong> Vão no final da URL, depois de <code>?</code>. Ótimos para filtros.</p>
+                    <div class="code-block">GET /produtos?categoria=tenis&cor=azul</div>
+                    <p><strong>Path Params (Parâmetros de Caminho):</strong> Fazem parte da URL. Ótimos para IDs.</p>
+                    <div class="code-block">GET /produtos/1520</div>
+                </section>
+
+                <section id="auth">
+                    <h2>Autenticação (Auth)</h2>
+                    <p>APIs públicas podem ser abertas. Mas APIs privadas exigem que você se identifique. O padrão moderno é o <strong>Bearer Token</strong>.</p>
+                    <div class="code-block">
+Authorization: Bearer abc_123_segredo_super_secreto
+                    </div>
+                </section>
+
+                <section id="tools">
+                    <h2>Ferramentas</h2>
+                    <p>Desenvolvedores não testam APIs no navegador (o navegador só faz GET facilmente). Usamos ferramentas dedicadas.</p>
+                    <p>Para testes avançados e organização de requisições, recomendamos o uso de plataformas profissionais como <strong>Postman</strong> ou <strong>Insomnia</strong>. Elas permitem criar coleções, salvar tokens e automatizar testes.</p>
+                </section>
+
+                <section id="conclusion">
+                    <h2>Próximos Passos</h2>
+                    <p>Chegamos ao fim da parte teórica. O mundo do desenvolvimento é vasto, mas entender como os sistemas conversam é o primeiro passo para dominar a web moderna.</p>
+                    <p>Se este guia foi útil para você, considere apoiar a continuidade do projeto.</p>
+                </section>
+
+                <section id="support">
+                    <div class="footer-section">
+                        <h3>Mantenha este projeto ativo ;)</h3>
+                        <p class="footer-text">
+                            O <strong>docs.api.br</strong> existe para ensinar assuntos difíceis de maneira prática e fácil, sem paywalls e sem anúncios intrusivos. Se este conteúdo te ajudou, considere apoiar a infraestrutura. Dessa forma, podemos englobar mais assuntos no projeto, criar novos conteúdos e muito mais. Um abraço &lt;3
+                        </p>
+                        
+                        <div class="footer-btn-wrapper">
+                            <a href="https://github.com/sponsors/euoryan" target="_blank" class="btn-donate">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                                Fazer uma doação
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="footer-note">
+                        <span>© 2025 docs.api.br</span>
+                        <span style="opacity: 0.5;">Interesse comercial no domínio? <a href="mailto:contato@euoryan.com" style="color: inherit; text-decoration: underline;">Entre em contato</a>.</span>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Botão Voltar ao Topo (Minimalista & Animado) -->
+    <div id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+        const topLinks = document.querySelectorAll('.nav-link');
+        const navGuide = document.getElementById('nav-guide');
+        const backToTopBtn = document.getElementById('backToTop');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const iconBtn = document.querySelector('.icon-btn');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                if (section.offsetTop <= scrollPos) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            if (window.scrollY < 100) {
+                current = 'welcome';
+            }
+
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+                current = 'support';
+            }
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (current && link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+            
+            navGuide.classList.remove('active');
+
+            if(current !== 'support') {
+                navGuide.classList.add('active');
+            }
+
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        const sidebar = document.getElementById('sidebar');
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+        }
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) sidebar.classList.remove('open');
+            });
+        });
+
+        function toggleDropdown() {
+            dropdownMenu.classList.toggle('show');
+            iconBtn.classList.toggle('active');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!iconBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+                iconBtn.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
