@@ -38,6 +38,7 @@
         html { 
             scroll-behavior: smooth; 
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -381,6 +382,13 @@
             text-align: justify;
         }
 
+        .footer-btn-wrapper {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
         .footer-note {
             font-size: 13px;
             color: var(--text-faint);
@@ -393,22 +401,21 @@
             width: 100%;
         }
 
-        /* --- BACK TO TOP COM ANIMAÇÃO DISCRETA --- */
-        @keyframes pulse-orange {
-            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); border-color: var(--accent); }
-            70% { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); border-color: var(--accent); }
-            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); border-color: var(--border); }
+        /* --- BACK TO TOP COM ANIMAÇÃO DE LOADING --- */
+        @keyframes rotate-loader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         #backToTop {
             position: fixed;
             bottom: 32px;
             right: 32px;
-            width: 36px; /* Tamanho confortável */
-            height: 36px;
-            background: var(--bg-card); /* Fundo sólido para cobrir texto */
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 8px; /* Quadrado arredondado */
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -416,29 +423,65 @@
             cursor: pointer;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.3s ease;
-            z-index: 10000; /* Z-Index Alto garantido */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        
-        #backToTop.visible { 
-            opacity: 1; 
-            pointer-events: auto;
-            /* Animação de pulso discreto a cada 4s para não ser irritante */
-            animation: pulse-orange 4s infinite; 
+            transition: opacity 0.3s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+            z-index: 10000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
-        #backToTop:hover { 
-            border-color: var(--text-main);
+        #backToTop::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                transparent 250deg,
+                var(--accent) 260deg,
+                var(--accent) 310deg,
+                transparent 320deg,
+                transparent 360deg
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            animation: rotate-loader 2.5s linear infinite;
+            will-change: transform;
+        }
+
+        #backToTop::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--bg-card);
+            z-index: -1;
+        }
+
+        #backToTop.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #backToTop.visible::before {
+            opacity: 1;
+        }
+
+        #backToTop:hover {
             color: var(--text-main);
             background: var(--bg-hover);
-            animation: none; /* Para animação ao interagir */
-            transform: translateY(-2px);
+            border-color: var(--border-hover);
+        }
+
+        #backToTop:hover::after {
+            background: var(--bg-hover);
         }
         
         #backToTop svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .mobile-toggle { display: none; background: none; border: none; color: var(--text-main); }
@@ -454,7 +497,10 @@
             .footer-note { flex-direction: column; gap: 16px; text-align: center; }
             .footer-text { text-align: justify; }
             
-            .footer-btn-wrapper { width: 100%; }
+            .footer-btn-wrapper { 
+                width: 100%; 
+                flex-direction: column;
+            }
             .footer-btn-wrapper .btn-donate { width: 100%; }
             
             /* Ajuste posição back to top no mobile */
@@ -789,7 +835,17 @@ Authorization: Bearer abc_123_segredo_super_secreto
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                 </svg>
-                                Fazer uma doação
+                                GitHub Sponsors
+                            </a>
+                            <a href="https://buymeacoffee.com/euoryan" target="_blank" class="btn-donate">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                                </svg>
+                                Buy Me a Coffee
                             </a>
                         </div>
                     </div>
